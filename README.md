@@ -24,11 +24,15 @@ If you want to report bugs, offer suggestions etc, contact me at Contact@Josephw
 - The vauger your input, eg "google.com" the longer it will take/more likely to run into bugs
 - for best results give specific sub domains
 - Only find GET request based SSRF, **not post**
+- Does not work consistently with websites where JS changes HTML
+- Specifying a domain will branch into sub domains, but not the otherway round, eg google.com will count keep.google.com as in scope, but not the other way around
 
 ### To add in the future:
 
 - Automated fuzzer for common SSRF payloads?
 - Rate limiting of get requests
+- specify which subdomains are off limit
+
 
 ### Obvious legal comments
 

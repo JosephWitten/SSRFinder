@@ -28,6 +28,10 @@ if ("-p" in sys.argv):
 domain = sys.argv[1]
 OGdomain = "http://" + domain
 
+def printArray(array):
+    for i in array:
+        print(i)
+
 def getSource(currentDomain):
     r = requests.get(currentDomain)
     return (r.text)
@@ -35,37 +39,48 @@ def getSource(currentDomain):
 
 def getHref(html):
     #Split big html block into tags *kind of*
+    html = html.replace("\n", "").replace("\r", "").replace(" ", "")
     lineArray = html.split(">")
     for i in range(0, len(lineArray)):
+        #print(lineArray)
 
         #Find <a tags
         if ("<a" in lineArray[i]):
             temp = lineArray[i]
             #Yoink href link out of tag
+         
             result = (temp[temp.find("href=\"")+len("href=\""):temp.rfind("\"")])
 
             #make sure link is not relative
             if (result != ""):
                 if (result[0] == "/"):
                     result = OGdomain + result
-
+            
             if (result.find("\"") != -1):
                 result = result[:(result.find("\""))]
             
+
             #check if in scope
             if (domain in result):
+                temp = result.split("=")
 
-                #check if already found
-                if (result not in foundURLs):
-                    foundURLs.append(result)
+                if (domain in temp[0]):
 
-            #Remember out of scope links   
+                    #check if already found
+                    if (result not in foundURLs):
+                        foundURLs.append(result)
+
+                #Remember out of scope links   
+                else:
+                    if(result not in outOfScope):
+                        outOfScope.append(result)
+                        if (pipeMode == False):
+                            print("URL found that did not contain original domain, could be out of scope : " + result)
             else:
-                if (domain not in outOfScope):
-                    outOfScope.append(domain)
+                if(result not in outOfScope):
+                    outOfScope.append(result)
                     if (pipeMode == False):
                         print("URL found that did not contain original domain, could be out of scope : " + result)
-                
 
 
 html = getSource(OGdomain)
@@ -73,14 +88,26 @@ getHref(html)
 
 
 
+
 def sortURLs():
+    count = 0
+    if (pipeMode == False):
+        print("sorting URLs")
     for i in range(0, len(foundURLs)):
+        count = count + 1
         if (foundURLs[i].count("http") > 1):
             if (pipeMode == False):
                 print("potentially interesting URL found : " + foundURLs[i])
+            else:
+                print(foundURLs[i])
             interestingURLs.append(foundURLs[i])
+    if(count != 0):
+        print("no interesting URLs")
 
 def main():
+    if (len(foundURLs) < 1):
+        print("No URLs we're found, either this is a bug or the page may not have any links")
+        sys.exit(1)
     i = 0
     while(i < len(foundURLs)):
         try:
@@ -95,9 +122,7 @@ def main():
             i = i + 1
     
     sortURLs()
-    for i in interestingURLs:
-        print(i)
-    
+    print(interestingURLs)
 
 
 
@@ -109,5 +134,3 @@ except KeyboardInterrupt:
     #print(foundURLs)
     #print(outOfScope)
     sortURLs()
-    for i in interestingURLs:
-        print(i)
