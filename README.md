@@ -6,6 +6,12 @@
 
 `Usage: python SSRFinder.py <DOMAIN> <OPTIONS>`
 
+Options:
+
+- -h/--help: show this help page
+- -p : Pipe mode, only shows final interesting URLs, ideal for piping into a file
+- -b : blacklist subdomains eg, '-b www,noscope,admin,internal
+
 ### What is this tool?
 
 This is a tool which will:
@@ -31,8 +37,7 @@ If you want to report bugs, offer suggestions etc, contact me at Contact@Josephw
 
 - Automated fuzzer for common SSRF payloads?
 - Rate limiting of get requests
-- specify which subdomains are off limit
-
+- specify which subdomains are off limit (whitelist/blacklist)
 
 ### Obvious legal comments
 
