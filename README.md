@@ -2,6 +2,8 @@
 
 ## An *assistant* to help you find SSRF vulns
 
+# IMPORTANT: This has been discontinued during production. It is currently a half working web crawler and slow. A better one will be written soon.
+
 ### Usage:
 
 `Usage: python SSRFinder.py <DOMAIN> <OPTIONS>`
